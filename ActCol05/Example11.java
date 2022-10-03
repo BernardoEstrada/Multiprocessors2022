@@ -8,6 +8,8 @@
 //				be used as the basis to calculate the improvement obtained
 // 				with parallel technologies.
 //
+//				This implementation uses Fork Join.
+//
 // Copyright (c) 2020 by Tecnologico de Monterrey.
 // All Rights Reserved. May be reproduced for any non-commercial
 // purpose.
@@ -17,9 +19,13 @@
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.RecursiveTask;
 
-public class Example11 extends Thread {
+public class Example11 extends RecursiveTask<Void> {
 	private int src[], dest[], start, end;
+	private static final int SIZE = 100_000_000;
+	private static final int MIN = 10_000;
 
 	public Example11(int src[], int dest[], int start, int end) {
 		this.src = src;
@@ -28,7 +34,7 @@ public class Example11 extends Thread {
 		this.end = end;
 	}
 
-	void doTask() {
+	public Void computeDirectly() {
 		for (int i = start; i < end; i++) {
 			int pixel = src[i];
 			int r = (pixel >> 16) & 0xFF;
@@ -37,15 +43,25 @@ public class Example11 extends Thread {
 			int gray = (int) (r + g + b)/3;
 			dest[i] = (0xFF << 24) | ((gray << 16) | (gray << 8) | gray);
 		}
+		return null;
 	}
 
-	public void run() {
-		doTask();
+	@Override
+	protected Void compute() {
+		if ((end - start) <= MIN) {
+			computeDirectly();
+		} else {
+			int mid = start + ((end - start) / 2);
+			invokeAll(new Example11(src, dest, start, mid),
+				new Example11(src, dest, mid, end));
+		}
+		return null;
 	}
 
 	public static void main(String args[]) throws Exception {
 		long startTime, stopTime;
 		double ms;
+		ForkJoinPool pool;
 
 		if (args.length != 1) {
 			System.out.println("usage: java Example11 image_file");
@@ -62,25 +78,15 @@ public class Example11 extends Thread {
 		int dest[] = new int[src.length];
 
 		Example11 threads[] = new Example11[Utils.MAXTHREADS];
-
-		System.out.printf("Starting...\n");
+		
+		System.out.printf("Starting with %d threads...\n", Utils.MAXTHREADS);
 		ms = 0;
-		int blockSize = (w * h) / Utils.MAXTHREADS;
 
 		for (int i = 0; i < Utils.N; i++) {
 			startTime = System.currentTimeMillis();
 
-			for (int j = 0; j < Utils.MAXTHREADS; j++) {
-				threads[j] = new Example11(src, dest, j*blockSize, (j+1)*blockSize);
-				threads[j].start();
-			}
-			try {
-				for (int j = 0; j < Utils.MAXTHREADS; j++) {
-					threads[j].join();
-				}
-			} catch (InterruptedException ie) {
-				System.out.printf("error: %s\n", ie.getMessage());
-			}
+			pool = new ForkJoinPool(Utils.MAXTHREADS);
+			pool.invoke(new Example11(src, dest, 0, w * h));
 
 			stopTime = System.currentTimeMillis();
 
