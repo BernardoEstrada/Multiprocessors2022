@@ -28,23 +28,20 @@
 //
 // Speedup = 0.36x ??
 import java.lang.Math;
+import java.util.concurrent.RecursiveTask;
+import java.util.concurrent.ForkJoinPool;
 
 
-public class Example7 extends Thread {
+public class Example7 extends RecursiveTask<Long> {
 	private static final int SIZE = 1_000_000;
+	private static final int MIN = 10_000;
 	private boolean array[];
-	private double result;
 	private int start, end;
 
 	public Example7(boolean array[], int start, int end) {
 		this.array = array;
-		this.result = 0;
 		this.start = start;
 		this.end = end;
-	}
-
-	public double getResult() {
-		return result;
 	}
 
 	public void prime(int start, int end) {
@@ -67,54 +64,56 @@ public class Example7 extends Thread {
 		}
 	}
 
-	public void calculate(int start, int end) {
-		result = 0;
+	public Long calculate(int start, int end) {
+		long result = 0;
 		for (int i = start; i < end; i++){
 			if (array[i]){
 				result += i;
 			}
 		}
+		return result;
 	}
 
-	public void run() {
+	public Long computeDirectly() {
 		prime(start, end);
-		calculate(start, end);
+		return calculate(start, end);
+		 
 	}
+
+	@Override
+	protected Long compute() {
+		if ( (end - start) <= MIN ) {
+			return computeDirectly();
+		} else {
+			int mid = start + ( (end - start) / 2 );
+			Example7 lowerMid = new Example7(array, start, mid);
+			lowerMid.fork();
+			Example7 upperMid = new Example7(array, mid, end);
+			return upperMid.compute() + lowerMid.join();
+		}
+	}
+
+	
 
 	public static void main(String args[]) {
+		long startTime, stopTime, result = 0;
 		boolean array[] = new boolean[SIZE + 1];
-		long startTime, stopTime;
-		double acum = 0;
-		double res = 0;
+		double ms;
+		ForkJoinPool pool;
 
-		Example7 t[] = new Example7[Utils.MAXTHREADS];
-		int sum = 0;
+
 		System.out.printf("Starting with %d threads...\n", Utils.MAXTHREADS);
-
-		int blockSize = SIZE / Utils.MAXTHREADS;
-
+		ms = 0;
 		for (int i = 0; i < Utils.N; i++) {
-			res = 0;
 			startTime = System.currentTimeMillis();
 
-			for (int j = 0; j < t.length; j++){
-				t[j] = new Example7(array, j*blockSize, (j+1)*blockSize);
-				t[j].start();
-			}
-			try {
-				for (int j = 0; j < t.length; j++){
-					t[j].join();
-					res += t[j].getResult();
-				}
-			} catch (InterruptedException ie) {
-				System.out.printf("An error ocurred while waiting for the threads to finish.\n");
-			}
+			pool = new ForkJoinPool(Utils.MAXTHREADS);
+			result = pool.invoke(new Example7(array, 0, array.length));
 
 			stopTime = System.currentTimeMillis();
-
-			acum += (stopTime - startTime);
+			ms += (stopTime - startTime);
 		}
-		System.out.printf("sum =  " + res + "\n");
-		System.out.printf("avg time = %.5f ms\n", (acum / Utils.N));
+		System.out.printf("result = %d\n", result);
+		System.out.printf("avg time = %.5f\n", (ms / Utils.N));
 	}
 }
