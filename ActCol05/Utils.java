@@ -18,6 +18,7 @@ public class Utils {
 	public static final int TOP_VALUE = 10_000;
 	public static final Random r = new Random();
 
+	// public static final int MAXTHREADS = 1;
 	public static final int MAXTHREADS = Runtime.getRuntime().availableProcessors();
 	public static final int N = 10;
 
