@@ -20,13 +20,13 @@
 // ======Outputs====================================================
 // Single Thread
 // sum = 3.7550402023E10
-// avg time = 133.3 ms
+// avg time = 171.6 ms
 //
 // Multi Thread
 // sum = 3.7550402023E10
-// avg time = 371.3 ms ??
+// avg time = 121 ms
 //
-// Speedup = 0.36x ??
+// Speedup = 1.41x
 import java.lang.Math;
 import java.util.concurrent.RecursiveTask;
 import java.util.concurrent.ForkJoinPool;

@@ -15,6 +15,14 @@
 // purpose.
 //
 // =================================================================
+// ======Outputs====================================================
+// Single Thread
+// avg time = 37 ms
+//
+// Fork Join
+// avg time =  14ms
+//
+// Speedup = 2.64x
 
 import java.awt.image.BufferedImage;
 import java.io.File;
