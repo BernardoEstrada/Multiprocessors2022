@@ -19,13 +19,28 @@
 int isPrime(int n);
 
 int main(int argc, char* argv[]) {
-  double sum = 0;
-  int i;
+  int *a, i, sum;
+  double ms;
+
+  a = (int *) malloc(SIZE * sizeof(int));
+  fill_array(a, SIZE);
+
   char *oldLocale = setlocale(LC_NUMERIC, NULL);
 
-  for(i = 0; i < LIMIT; i++)
-    if(isPrime(i))
-      sum += i;
+	printf("Starting...\n");
+	ms = 0;
+	for (i = 0; i < N; i++) {
+		start_timer();
+		
+		for(i = 0; i < LIMIT; i++)
+      if(isPrime(i))
+        sum += i;
+		
+		ms += stop_timer();
+	}
+	printf("sum = %lf\n", sum);
+	printf("avg time = %.5lf ms\n", (ms / N));
+
 
   setlocale(LC_NUMERIC, "");
   printf("%'.0f\n", sum);
