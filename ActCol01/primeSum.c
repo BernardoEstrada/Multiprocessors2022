@@ -19,8 +19,8 @@
 int isPrime(int n);
 
 int main(int argc, char* argv[]) {
-  int *a, i, sum;
-  double ms;
+  int *a, i;
+  double ms, sum;
 
   a = (int *) malloc(SIZE * sizeof(int));
   fill_array(a, SIZE);
@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
 		
 		ms += stop_timer();
 	}
-	printf("sum = %d\n", sum);
+	printf("sum = %.0f\n", sum);
 	printf("avg time = %.5lf ms\n", (ms / N));
 
 
