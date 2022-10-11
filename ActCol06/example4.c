@@ -28,8 +28,9 @@
 #define SIZE 1000000000
 
 // count number of even numbers in an array using OpenMP
-int countEven(int *a, int size) {
-  int i, sum = 0;
+double countEven(int *a, int size) {
+  int i;
+  double sum = 0;
 
   #pragma omp parallel for reduction(+:sum)
   for (i = 0; i < size; i++) {
@@ -41,8 +42,8 @@ int countEven(int *a, int size) {
 }
 
 int main(int argc, char* argv[]) {
-  int *a, i, sum;
-  double ms;
+  int *a, i;
+  double ms, sum;
 
   printf("\nOpenMP \n");
   a = (int *) malloc(SIZE * sizeof(int));
@@ -55,7 +56,7 @@ int main(int argc, char* argv[]) {
 		sum = countEven(a, SIZE);
 		ms += stop_timer();
 	}
-	printf("sum = %d\n", sum);
+	printf("sum = %.0f\n", sum);
 	printf("avg time = %.5lf ms\n", (ms / N));
   
   return 0;
