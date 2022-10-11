@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
 
 
   setlocale(LC_NUMERIC, "");
-  printf("%'.0d\n", sum);
+  printf("%'.0f\n", sum);
 
   setlocale(LC_NUMERIC, oldLocale);
   free(a);
