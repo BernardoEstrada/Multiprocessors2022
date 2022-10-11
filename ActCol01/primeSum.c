@@ -13,8 +13,8 @@
 #include <locale.h>
 #include "utils.h"
 
-#define SIZE 1000000
-#define LIMIT 5000000
+#define SIZE 1000000000
+#define LIMIT 1000000000
 
 int isPrime(int n);
 
@@ -38,14 +38,15 @@ int main(int argc, char* argv[]) {
 		
 		ms += stop_timer();
 	}
-	printf("sum = %lf\n", sum);
+	printf("sum = %d\n", sum);
 	printf("avg time = %.5lf ms\n", (ms / N));
 
 
   setlocale(LC_NUMERIC, "");
-  printf("%'.0f\n", sum);
+  printf("%'.0d\n", sum);
 
   setlocale(LC_NUMERIC, oldLocale);
+  free(a);
   return 0;
 }
 

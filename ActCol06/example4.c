@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
 		sum = countEven(a, SIZE);
 		ms += stop_timer();
 	}
-	printf("sum = %lf\n", sum);
+	printf("sum = %d\n", sum);
 	printf("avg time = %.5lf ms\n", (ms / N));
   
   return 0;
