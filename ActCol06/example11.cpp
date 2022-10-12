@@ -22,7 +22,16 @@
 #include <opencv2/imgcodecs/imgcodecs.hpp>
 #include "utils.h"
 
-// implement your code
+void grayscale(cv::Mat src, cv::Mat dest) {
+	int i, j;
+
+	#pragma omp parallel for shared(src, dest)
+	for (i = 0; i < src.rows; i++) {
+		for (j = 0; j < src.cols; j++) {
+			dest.at<double>(i, j) = (src.at<unsigned char *>(i, j)[0] + src.at<unsigned char *>(i, j)[1] + src.at<unsigned char *>(i, j)[2]) / 3;
+		}
+	}
+}
 
 int main(int argc, char* argv[]) {
 	int i;
@@ -43,9 +52,7 @@ int main(int argc, char* argv[]) {
 	acum = 0;
 	for (i = 0; i < N; i++) {
 		start_timer();
-
-		// call the implemented function
-
+		grayscale(src, dest);
 		acum += stop_timer();
 	}
 

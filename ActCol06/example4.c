@@ -12,20 +12,20 @@
 // =================================================================
 // ======Outputs====================================================
 // Single Thread
-// sum = 
-// avg time = 
+// count = 50003777
+// avg time = 895.55570 ms
 //
-// Fork Join
-// sum = 
-// avg time = 
+// OpenMP
+// count = 50000478
+// avg time = 143.00200 ms
 //
-// Speedup = 
+// Speedup = 6.26x
 
 #include <stdio.h>
 #include <stdlib.h>
 #include "utils.h"
 
-#define SIZE 1000000000
+#define SIZE 100000000
 
 // count number of even numbers in an array using OpenMP
 double countEven(int *a, int size) {
@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
 
   printf("\nOpenMP \n");
   a = (int *) malloc(SIZE * sizeof(int));
-  fill_array(a, SIZE);
+  random_array(a, SIZE);
 
 	printf("Starting...\n");
 	ms = 0;
@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
 		sum = countEven(a, SIZE);
 		ms += stop_timer();
 	}
-	printf("sum = %.0f\n", sum);
+	printf("count = %.0f\n", sum);
 	printf("avg time = %.5lf ms\n", (ms / N));
   
   return 0;
