@@ -22,13 +22,26 @@
 #include <opencv2/imgcodecs/imgcodecs.hpp>
 #include "utils.h"
 
-void grayscale(cv::Mat src, cv::Mat dest) {
+void grayscale(cv::Mat &src, cv::Mat &dest) {
 	int i, j;
+	float r, g, b, gray;
 
-	#pragma omp parallel for shared(src, dest)
+	#pragma omp parallel for shared(src, dest) private(i, j, r, g, b, gray)
 	for (i = 0; i < src.rows; i++) {
 		for (j = 0; j < src.cols; j++) {
-			dest.at<double>(i, j) = (src.at<unsigned char *>(i, j)[0] + src.at<unsigned char *>(i, j)[1] + src.at<unsigned char *>(i, j)[2]) / 3;
+			r = 0;
+			g = 0;
+			b = 0;
+			r += (float)src.at<cv::Vec3b>(i, j)[RED];
+			g += (float)src.at<cv::Vec3b>(i, j)[GREEN];
+			b += (float)src.at<cv::Vec3b>(i, j)[BLUE];
+
+			gray = (r + g + b)/3.0;
+
+			dest.at<cv::Vec3b>(i, j)[RED] = (unsigned char)(gray);
+			dest.at<cv::Vec3b>(i, j)[GREEN] = (unsigned char)(gray);
+			dest.at<cv::Vec3b>(i, j)[BLUE] = (unsigned char)(gray);
+			
 		}
 	}
 }
@@ -45,7 +58,7 @@ int main(int argc, char* argv[]) {
 	cv::Mat src = cv::imread(argv[1], cv::IMREAD_COLOR);
 	cv::Mat dest = cv::Mat(src.rows, src.cols, CV_8UC3);
 	if (!src.data) {
-	printf("Could not load image file: %s\n", argv[1]);
+		printf("Could not load image file: %s\n", argv[1]);
 		return -1;
 	}
 
