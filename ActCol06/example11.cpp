@@ -11,6 +11,7 @@
 // purpose.
 //
 // =================================================================
+// No pudimos probar el speedup debido a que tuvimos problemas con la instalación de OpenCV y el servidor nos mandaba un error en la librería.
 
 #include <stdio.h>
 #include <stdlib.h>
