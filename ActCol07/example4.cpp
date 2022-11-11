@@ -26,7 +26,7 @@ using namespace tbb;
 
 class AddArray {
 private:
-	int *array;
+	int *array,size;
 	long int result;
 
 public:
