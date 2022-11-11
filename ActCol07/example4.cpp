@@ -31,7 +31,7 @@ private:
 
 public:
 	AddArray(int *a, int s) : array(a), size(s) ,result(0) {}
-	AddArray(AddArray &x, split): array(x.array), size(obj.size),result(0) {}
+	AddArray(AddArray &x, split): array(x.array), size(x.size),result(0) {}
 
 	long int getResult() const {
 		return result;
