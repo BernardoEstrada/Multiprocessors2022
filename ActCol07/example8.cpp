@@ -25,55 +25,72 @@ const int SIZE = 100000;
 using namespace std;
 using namespace tbb;
 
-class AddArray {
+class EnumSort
+{
 private:
-	int *array;
-	long int result;
+	int *array,*b,*c, size;
 
 public:
-	AddArray(int *a) : array(a), result(0) {}
+	EnumSort(int *a,int *b,int *c, int s) : array(a),b(b),c(c), size(s) { }
 
-	AddArray(AddArray &x, split): array(x.array), result(0) {}
 
-	long int getResult() const {
-		return result;
-	}
-
-	void operator() (const blocked_range<int> &r) {
+    void operator() (const blocked_range<int> &r) const {
 		for (int i = r.begin(); i != r.end(); i++) {
-			result += array[i];
+			for (int j = 0; j < size; j++) {
+				if (array[i] > array[j] || array[i] == array[j] && j < i) {
+					b[i] += 1;
+				}
+			}
 		}
 	}
 
-	void join(const AddArray &x) {
-		result += x.result;
-	}
+    void last(){
+        for(int i = 0; i < size; i++){
+			c[b[i]] = array[i];
+		}
+
+		for(int i = 0; i < size; i++){
+			array[i] = c[i];
+		}
+    }
 };
 
-int main(int argc, char* argv[]) {
-	int *a;
-	long int result = 0;
+int main(int argc, char *argv[])
+{
+	int *a,*b,*c;
 	double ms;
 
 	a = new int[SIZE];
-	fill_array(a, SIZE);
-	display_array("a", a);
+    b = new int[SIZE];
+    c = new int[SIZE];
+	random_array(a, SIZE);
+	display_array("before", a);
+	int *aux = new int[SIZE];
+    int *aux1 = new int[SIZE];
+    int *aux2 = new int[SIZE];
 
 	cout << "Starting..." << endl;
 	ms = 0;
-	for (int i = 1; i <= N; i++) {
-		start_timer();
-
-		AddArray obj(a);
-		parallel_reduce(blocked_range<int>(0, SIZE), obj);
-		result = obj.getResult();
-
+	for (int i = 0; i < N; i++) {
+		memcpy(aux, a, sizeof(int) * SIZE);
+        memcpy(aux1, b, sizeof(int) * SIZE);
+        memcpy(aux2, c, sizeof(int) * SIZE);
+        start_timer();
+		//EnumSort en(aux, SIZE);
+		
+		// call your method here.
+		//en.sort();
+        EnumSort obj(aux,aux1,aux2,SIZE);
+        parallel_for(blocked_range<int>(0, SIZE),  obj);
+        obj.last();
 		ms += stop_timer();
 	}
-	cout << "sum = " << (long int) result << endl;
-	cout << "avg time = " << setprecision(15) << (ms / N) << " ms" << endl;
 
-	delete [] a;
+	memcpy(a, aux, sizeof(int) * SIZE);
+	display_array("after", a);
+	cout << "avg time = " << setprecision(15) << (ms / N) << " ms" << endl;
+	delete[] a;
+	delete [] aux;
 	return 0;
 }
 
