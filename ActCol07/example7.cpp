@@ -39,6 +39,27 @@ public:
 		return result;
 	}
 
+    void calculate () {
+		result = 0;
+		bool isPrime = true;
+		for (int i = 0; i < size; i++) {
+			if(array[i] < 2){
+				isPrime = false;
+			} 
+			for (int j = 2; j <= array[i]/2; ++j) {
+				if (array[i] % j == 0) {
+					isPrime = false;
+				}
+			}
+			if(isPrime){
+				result += array[i];
+			}
+		}
+	}
+};
+
+
+
 	void operator() (const blocked_range<int> &r) {
 		for (int i = r.begin(); i != r.end(); i++) {
 			result += array[i];
