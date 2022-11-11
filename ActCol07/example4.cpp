@@ -30,9 +30,8 @@ private:
 	long int result;
 
 public:
-	AddArray(int *a) : array(a), result(0) {}
-
-	AddArray(AddArray &x, split): array(x.array), result(0) {}
+	AddArray(int *a, int s) : array(a),,size(s) result(0) {}
+	AddArray(AddArray &x, split): array(x.array), size(obj.size),result(0) {}
 
 	long int getResult() const {
 		return result;
@@ -65,7 +64,7 @@ int main(int argc, char* argv[]) {
 	for (int i = 1; i <= N; i++) {
 		start_timer();
 
-		AddArray obj(a);
+		AddArray obj(a,SIZE);
 		parallel_reduce(blocked_range<int>(0, SIZE), obj);
 		result = obj.getResult();
 
