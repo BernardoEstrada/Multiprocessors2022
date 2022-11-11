@@ -17,21 +17,27 @@
 
 int main(int argc, char* argv[]) {
 	int i, *a, result=0;
-
+	double ms;
 	a = (int *) malloc(sizeof(int) * SIZE);
   char *txt = "array";
 
 	fill_array(a, SIZE);
 
-	printf("Calculando...\n");
-	for (i = 0; i < SIZE; i++) {
-		if(a[i]%2 == 0){
-			result += a[i];
+	printf("Starting...\n");
+	ms = 0;
+	for (int i = 1; i <= N; i++) {
+		start_timer();
+		for (i = 0; i < SIZE; i++) {
+			if(a[i]%2 == 0){
+				result += a[i];
+			}
 		}
+		ms += stop_timer();
 	}
 
 	free(a);
   printf("Resultado: %d\n", result);
+	printf("avg time = %f ms\n", (ms / N));
 
 	return 0;
 }
