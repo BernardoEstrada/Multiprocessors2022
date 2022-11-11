@@ -24,36 +24,39 @@
 using namespace std;
 using namespace tbb;
 
-class AddArray {
+using namespace std;
+using namespace tbb;
+
+class Even {
 private:
-	int *array,size;
-	long int result;
+	int *A, size,result;
 
 public:
-	AddArray(int *a, int s) : array(a), size(s) ,result(0) {}
-	AddArray(AddArray &x, split): array(x.array), size(x.size),result(0) {}
-
-	long int getResult() const {
+	Even(int *a, int s) : A(a), size(s),result(0) {}
+    Even(Even &obj,split) : A(obj.A), size(obj.size),result(0) {}
+    
+	double getResult() const {
 		return result;
 	}
 
-	void operator() (const blocked_range<int> &r) {
+    void operator() (const blocked_range<int> &r){
 		for (int i = r.begin(); i != r.end(); i++) {
-			if(array[i]%2 == 0){
-                result += 1;
-            }
+			if((A[i]%2)==0){
+				result +=1;
+			}
 		}
-	}
+    }
 
-	void join(const AddArray &x) {
+
+    void join(const Even &x) {
 		result += x.result;
 	}
 };
 
 int main(int argc, char* argv[]) {
 	int *a;
-	long int result = 0;
 	double ms;
+    int result;
 
 	a = new int[SIZE];
 	fill_array(a, SIZE);
@@ -61,19 +64,20 @@ int main(int argc, char* argv[]) {
 
 	cout << "Starting..." << endl;
 	ms = 0;
-	for (int i = 1; i <= N; i++) {
+	
+	for (int i = 0; i < N; i++) {
 		start_timer();
 
-		AddArray obj(a,SIZE);
-		parallel_reduce(blocked_range<int>(0, SIZE), obj);
-		result = obj.getResult();
-
+		// call your method here.
+		//obj.doTask();
+        Even obj(a,SIZE);
+        parallel_reduce(blocked_range<int>(0, SIZE), obj);
+        result = obj.getResult();
 		ms += stop_timer();
 	}
-	cout << "sum = " << (long int) result << endl;
+	cout << "result = "<< setprecision(15) << result<<endl;
 	cout << "avg time = " << setprecision(15) << (ms / N) << " ms" << endl;
 
 	delete [] a;
 	return 0;
 }
-
