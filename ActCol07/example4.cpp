@@ -40,7 +40,7 @@ public:
 
 	void operator() (const blocked_range<int> &r) {
 		for (int i = r.begin(); i != r.end(); i++) {
-			if(A[i]%2 == 0){
+			if(array[i]%2 == 0){
                 result += 1;
             }
 		}
