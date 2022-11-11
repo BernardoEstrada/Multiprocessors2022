@@ -5,3 +5,6 @@
 **/*.class
 **/*.zip
 **/*.o
+
+.vscode
+**/.DS_Store
