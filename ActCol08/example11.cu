@@ -1,7 +1,8 @@
 // =================================================================
 //
 // File: example11.cpp
-// Author(s):
+// Authors: Martin Noboa - A01704052
+// 		   Bernardo Estrada - A01704320
 // Description: This file implements the code that transforms a
 //				grayscale image. Uses OpenCV, to compile:
 //				g++ example11.cpp `pkg-config --cflags --libs opencv4`
