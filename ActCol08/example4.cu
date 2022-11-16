@@ -7,6 +7,16 @@
 //				even numbers within an array using CUDA.
 //
 // =================================================================
+// ======Outputs====================================================
+// Single Thread
+// sum = 941896832
+// avg time = 34.2 ms
+//
+// CUDA
+// sum = 941896832
+// avg time = 0.00350 ms
+//
+// Speedup = 9,771.43x
 
 #include <stdio.h>
 #include <stdlib.h>

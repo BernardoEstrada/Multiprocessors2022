@@ -16,6 +16,17 @@
 // purpose.
 //
 // =================================================================
+// ======Outputs====================================================
+// Single Thread
+// avg time = 37 ms
+//
+// CUDA
+// avg time = 0.00030 ms
+//
+// Tambien a veces es 
+// avg time = 0.00000 ms
+//
+// Speedup = 123,333.33x (Un Poquito nomas)
 
 #include <stdio.h>
 #include <stdlib.h>
